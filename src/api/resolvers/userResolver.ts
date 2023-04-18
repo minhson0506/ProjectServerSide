@@ -2,8 +2,17 @@ import {response} from 'express';
 import {GraphQLError} from 'graphql';
 import LoginMessageResponse from '../../interfaces/LoginMessageResponse';
 import {User, UserIdWithToken} from '../../interfaces/User';
+import {Picture} from '../../interfaces/Picture';
 
 export default {
+    Picture: {
+        owner: async (parent: Picture) => {
+            const response = await fetch(`${process.env.AUTH_URL}/users/${parent.owner}`);
+            if (!response.ok) {
+                throw new GraphQLError(response.statusText, {extensions: {code: 'NOT_FOUND'}});
+            }
+            return await response.json() as User;
+        },
     Query: {
         // get all users
         users: async () => {
