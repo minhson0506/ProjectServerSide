@@ -1,8 +1,8 @@
-import {Schema, mongo} from "mongoose";
+import mongoose, {Schema} from "mongoose";
 import {Profile} from "../../interfaces/Profile";
 
 const ProfileModel = new Schema<Profile>({
-    user: {
+    owner: {
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true,
@@ -19,7 +19,7 @@ const ProfileModel = new Schema<Profile>({
         type: String,
         required: false,
     },
-    address: {
+    location: {
         type: String,
         required: false,
     },
@@ -29,4 +29,4 @@ const ProfileModel = new Schema<Profile>({
     },
 });
 
-export default mongo.model<Profile>('Profile', ProfileModel);
+export default mongoose.model<Profile>('Profile', ProfileModel);
