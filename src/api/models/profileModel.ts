@@ -27,6 +27,11 @@ const ProfileModel = new Schema<Profile>({
         type: [String],
         required: false,
     },
+    follows: {
+        type: [Schema.Types.ObjectId],
+        ref: 'User',
+        required: false,
+    },
 });
 
 export default mongoose.model<Profile>('Profile', ProfileModel);

@@ -1,0 +1,31 @@
+type Profile {
+    id: ID!
+    owner: User!
+    avatar: String
+    cover: String
+    about: String
+    location: String
+    interests: [String]
+    follows: [User]
+}
+
+type Query {
+    profiles: [Profile]
+    profileById(id: ID!): Profile
+    profileByOwner(owner: ID!): Profile
+}
+
+type Mutation {
+    createProfile(
+        owner: ID!
+        avatar: String
+        cover: String
+        about: String
+        location: String
+        interests: [String]
+    ): Profile
+    updateProfile(id: ID!, avatar: String, cover: String, about: String, location: String, interests: [String]): Profile
+    deleteProfile(id: ID!): Profile
+    addFollow(id: ID!): Profile
+    removeFollow(id: ID!): Profile
+}
