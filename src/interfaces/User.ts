@@ -8,7 +8,7 @@ interface User extends Document {
 interface UserTest {
   id?: string;
   user_name?: string; // returned from graphql is snake_case
-  userName?: string; // graphql variables are camelCase
+  // userName?: string; // graphql variables are camelCase
   email?: string;
   password?: string;
   token?: string;

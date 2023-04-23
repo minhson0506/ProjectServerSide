@@ -14,7 +14,7 @@ export default {
         commentsByPicture: async(parent: undefined, args: {pictureId: string}) => {
             return await commentModel.find({picture: args.pictureId});
         },
-        commentByOwner: async(parent: undefined, args: {ownerId: string}) => {
+        commentsByOwner: async(parent: undefined, args: {ownerId: string}) => {
             return await commentModel.find({owner: args.ownerId});
         },
     },
