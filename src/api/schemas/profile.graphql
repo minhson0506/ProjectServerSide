@@ -17,7 +17,6 @@ type Query {
 
 type Mutation {
     createProfile(
-        owner: ID!
         avatar: String
         cover: String
         about: String

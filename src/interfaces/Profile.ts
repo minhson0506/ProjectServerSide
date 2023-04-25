@@ -7,8 +7,18 @@ interface Profile extends Document {
     cover: string;
     about: string;
     location: string;
-    interests: [string];
-    follows: [Types.ObjectId | User];
+    interests: string[];
+    follows: (Types.ObjectId | User)[];
 }
 
-export {Profile}
+interface ProfileTest {
+    id?: string;
+    owner?: Types.ObjectId | User;
+    avatar?: string;
+    cover?: string;
+    about?: string;
+    location?: string;
+    interests?: string[];
+}
+
+export {Profile, ProfileTest}

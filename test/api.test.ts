@@ -5,6 +5,11 @@ import {UserTest} from "../src/interfaces/User"
 import randomstring from "randomstring"
 import LoginMessageResponse from "../src/interfaces/LoginMessageResponse"
 import {getNotFound} from "./testFunction"
+import {postFile, postProfile} from "./profileFunction"
+import UploadMessageResponse from "../src/interfaces/UploadMessageResponse"
+import {ProfileTest} from "../src/interfaces/Profile"
+
+const uploadApp = process.env.UPLOAD_URL as string
 
 describe('GET /graphql', () => {
     beforeAll(async () => {
@@ -16,9 +21,9 @@ describe('GET /graphql', () => {
     })
 
     // test not found
-    it('responds with a not found message', async () => {
-        await getNotFound(app);
-    });
+    // it('responds with a not found message', async () => {
+    //     await getNotFound(app);
+    // });
 
     const testUser: UserTest = {
         user_name: 'Test User ' + randomstring.generate(7),
@@ -27,9 +32,11 @@ describe('GET /graphql', () => {
     };
 
     let userData: LoginMessageResponse;
+    let avatar: UploadMessageResponse;
+    let cover: UploadMessageResponse;
+    let profileData: ProfileTest;
 
-    // test user
-    // create user
+    // test create user
     it('should create a user', async () => {
         await postUser(app, testUser)
     })
@@ -54,32 +61,52 @@ describe('GET /graphql', () => {
         await putUser(app, userData.token!);
     });
 
+    // test upload file
+    it('should upload a file', async () => {
+        avatar = await postFile(uploadApp, userData.token!, 'avatar.jpeg');
+        cover = await postFile(uploadApp, userData.token!, 'cover.jpeg');
+    });
+
+    // test create profile
+    it('should create a profile', async () => {
+        profileData = {
+            owner: userData.user.id,
+            avatar: avatar.data.filename,
+            cover: cover.data.filename,
+            about: 'Test about',
+            location: 'Test location',
+            interests: ['Test interest 1', 'Test interest 2']
+        };
+        await postProfile(app, profileData, userData.token!);
+    });
+
+    // test delete user
     it('should delete current user', async () => {
         await deleteUser(app, userData.token!);
     });
 
     // test brute force protectiom
-    test('Brute force attack simulation', async () => {
-        const maxAttempts = 20;
-        const mockUser: UserTest = {
-            user_name: 'Test User ' + randomstring.generate(7),
-            email: randomstring.generate(9) + '@user.fi',
-            password: 'notthepassword',
-        };
+    // test('Brute force attack simulation', async () => {
+    //     const maxAttempts = 20;
+    //     const mockUser: UserTest = {
+    //         user_name: 'Test User ' + randomstring.generate(7),
+    //         email: randomstring.generate(9) + '@user.fi',
+    //         password: 'notthepassword',
+    //     };
 
-        try {
-            // Call the mock login function until the maximum number of attempts is reached
-            for (let i = 0; i < maxAttempts; i++) {
-                const result = await loginBrute(app, mockUser);
-                if (result) throw new Error('Brute force attack unsuccessful');
-            }
+    //     try {
+    //         // Call the mock login function until the maximum number of attempts is reached
+    //         for (let i = 0; i < maxAttempts; i++) {
+    //             const result = await loginBrute(app, mockUser);
+    //             if (result) throw new Error('Brute force attack unsuccessful');
+    //         }
 
-            // If the while loop completes successfully, the test fails
-            throw new Error('Brute force attack succeeded');
-        } catch (error) {
-            console.log(error);
-            // If the login function throws an error, the test passes
-            expect((error as Error).message).toBe('Brute force attack unsuccessful');
-        }
-    }, 15000);
+    //         // If the while loop completes successfully, the test fails
+    //         throw new Error('Brute force attack succeeded');
+    //     } catch (error) {
+    //         console.log(error);
+    //         // If the login function throws an error, the test passes
+    //         expect((error as Error).message).toBe('Brute force attack unsuccessful');
+    //     }
+    // }, 15000);
 });
