@@ -1,7 +1,7 @@
 import request from 'supertest';
 import expect from 'expect';
 import {UserTest} from "../src/interfaces/User";
-import LoginMessageResponse from '../src/interfaces/LoginMessageResponse';
+import {LoginMessageResponse} from '../src/interfaces/ResponseMessage';
 import ErrorResponse from '../src/interfaces/ErrorResponse';
 import randomstring from 'randomstring';
 

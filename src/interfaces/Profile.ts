@@ -19,6 +19,7 @@ interface ProfileTest {
     about?: string;
     location?: string;
     interests?: string[];
+    follows?: (Types.ObjectId | User)[];
 }
 
 export {Profile, ProfileTest}

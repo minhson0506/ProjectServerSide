@@ -3,6 +3,7 @@ import {UserIdWithToken} from "../../interfaces/User";
 import profileModel from "../models/profileModel";
 import {Types} from "mongoose";
 import {Profile} from "../../interfaces/Profile";
+import {ProfileMessageResponse} from "../../interfaces/ResponseMessage";
 
 export default {
     Query: {
@@ -21,7 +22,7 @@ export default {
             if (!user.token) {
                 throw new GraphQLError('Unauthorized', {extensions: {code: 'UNAUTHORIZED'}});
             }
-            const profile = new profileModel({ ...args, owner: new Types.ObjectId(user.id)});
+            const profile = new profileModel({...args, owner: new Types.ObjectId(user.id)});
             return await profile.save();
         },
         updateProfile: async (parent: undefined, args: Profile, user: UserIdWithToken) => {
@@ -32,7 +33,7 @@ export default {
             if (!profile) {
                 throw new GraphQLError('Profile not found', {extensions: {code: 'NOT_FOUND'}});
             }
-            if (profile.owner.toString() !== user.id) {
+            if (profile.owner._id.toString() !== user.id) {
                 throw new GraphQLError('Unauthorized', {extensions: {code: 'UNAUTHORIZED'}});
             }
             return await profileModel.findByIdAndUpdate(args.id, args, {new: true});
@@ -45,7 +46,7 @@ export default {
             if (!profile) {
                 throw new GraphQLError('Profile not found', {extensions: {code: 'NOT_FOUND'}});
             }
-            if (profile.owner.toString() !== user.id) {
+            if (profile.owner._id.toString() !== user.id) {
                 throw new GraphQLError('Unauthorized', {extensions: {code: 'UNAUTHORIZED'}});
             }
             return await profileModel.findByIdAndDelete(args.id);
@@ -58,7 +59,7 @@ export default {
             if (!profile) {
                 throw new GraphQLError('Profile not found', {extensions: {code: 'NOT_FOUND'}});
             }
-            if (profile.owner.toString() === user.id) {
+            if (profile.owner._id.toString() === user.id) {
                 throw new GraphQLError('Unauthorized', {extensions: {code: 'UNAUTHORIZED'}});
             }
             if (profile.follows.includes(new Types.ObjectId(args.id))) {
@@ -74,7 +75,7 @@ export default {
             if (!profile) {
                 throw new GraphQLError('Profile not found', {extensions: {code: 'NOT_FOUND'}});
             }
-            if (profile.owner.toString() === user.id) {
+            if (profile.owner.id.toString() === user.id) {
                 throw new GraphQLError('Unauthorized', {extensions: {code: 'UNAUTHORIZED'}});
             }
             if (!profile.follows.includes(new Types.ObjectId(args.id))) {

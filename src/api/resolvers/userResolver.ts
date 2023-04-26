@@ -1,6 +1,6 @@
 import {response} from 'express';
 import {GraphQLError} from 'graphql';
-import LoginMessageResponse from '../../interfaces/LoginMessageResponse';
+import {LoginMessageResponse} from '../../interfaces/ResponseMessage';
 import {User, UserIdWithToken} from '../../interfaces/User';
 import {Picture} from '../../interfaces/Picture';
 import {Profile} from '../../interfaces/Profile';
@@ -25,6 +25,16 @@ export default {
             }
             return await response.json() as User;
         },
+        follows: async (parent: Profile) => {
+            const follows = Promise.all(parent.follows.map(async (follow) => {
+                const response = await fetch(`${process.env.AUTH_URL}/users/${follow}`);
+                if (!response.ok) {
+                    throw new GraphQLError(response.statusText, {extensions: {code: 'NOT_FOUND'}});
+                }
+                return await response.json() as User;
+            }));
+            return follows;
+        }
     },
 
     Picture: {
