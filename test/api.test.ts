@@ -5,7 +5,7 @@ import {UserTest} from "../src/interfaces/User"
 import randomstring from "randomstring"
 import {LoginMessageResponse} from "../src/interfaces/ResponseMessage"
 import {getNotFound} from "./testFunction"
-import {deleteProfile, postFile, postProfile, updateProfile} from "./profileFunction"
+import {deleteProfile, getProfileById, getProfileByOwner, getProfiles, postFile, postProfile, updateProfile} from "./profileFunction"
 import UploadMessageResponse from "../src/interfaces/UploadMessageResponse"
 import {ProfileTest} from "../src/interfaces/Profile"
 
@@ -80,6 +80,21 @@ describe('GET /graphql', () => {
         };
         const profile = await postProfile(app, profileData, userData.token!);
         profileId = profile.id!;
+    });
+
+    // test get profiles
+    it('should return array of profiles', async () => {
+        await getProfiles(app);
+    });
+
+    // test get profile by Id
+    it('should return single profile', async () => {
+        await getProfileById(app, profileId);
+    });
+
+    // test get profile by user Id
+    it('should return single profile by user Id', async () => {
+        await getProfileByOwner(app, userData.user.id!);
     });
 
     // test update profile

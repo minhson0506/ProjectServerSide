@@ -2,6 +2,154 @@ import request from 'supertest';
 import {ProfileTest} from '../src/interfaces/Profile';
 import UploadMessageResponse from '../src/interfaces/UploadMessageResponse';
 
+const getProfiles = async (url: string | Function): Promise<ProfileTest> => {
+    return new Promise((resolve, reject) => {
+        request(url)
+            .post('/graphql')
+            .set('Content-Type', 'application/json')
+            .send({
+                query: `query Query {
+                    profiles {
+                        id
+                        owner {
+                            id
+                            user_name
+                            email
+                        }
+                        avatar
+                        cover
+                        about
+                        location
+                        interests
+                        follows {
+                            id
+                            user_name
+                            email
+                        }
+                    }
+                }`,
+            })
+            .expect(200, (err, response) => {
+                if (err) {
+                    reject(err);
+                }
+                const profiles = response.body.data.profiles;
+                expect(profiles).toBeInstanceOf(Array);
+                expect(profiles[0]).toHaveProperty('id');
+                expect(profiles[0]).toHaveProperty('owner');
+                expect(profiles[0]).toHaveProperty('avatar');
+                expect(profiles[0]).toHaveProperty('cover');
+                expect(profiles[0]).toHaveProperty('about');
+                expect(profiles[0]).toHaveProperty('location');
+                expect(profiles[0]).toHaveProperty('interests');
+                expect(profiles[0]).toHaveProperty('follows');
+                resolve(profiles);
+            }
+            );
+    });
+};
+
+const getProfileById = async (url: string | Function, id: string): Promise<ProfileTest> => {
+    return new Promise((resolve, reject) => {
+        request(url)
+            .post('/graphql')
+            .set('Content-Type', 'application/json')
+            .send({
+                query: `query Query($profileByIdId: ID!) {
+                    profileById(id: $profileByIdId) {
+                        id
+                        owner {
+                            id
+                            user_name
+                            email
+                        }
+                        avatar
+                        cover
+                        about
+                        location
+                        interests
+                        follows {
+                            id
+                            user_name
+                            email
+                        }
+                    }
+                }`,
+                variables: {
+                    profileByIdId: id,
+                },
+            })
+            .expect(200, (err, response) => {
+                if (err) {
+                    reject(err);
+                }
+                const profile = response.body.data.profileById;
+                expect(profile).toHaveProperty('id');
+                expect(profile).toHaveProperty('owner');
+                expect(profile).toHaveProperty('avatar');
+                expect(profile).toHaveProperty('cover');
+                expect(profile).toHaveProperty('about');
+                expect(profile).toHaveProperty('location');
+                expect(profile).toHaveProperty('interests');
+                expect(profile).toHaveProperty('follows');
+                resolve(profile);
+            }
+            );
+    });
+};
+
+const getProfileByOwner = async (url: string | Function, ownerId: string): Promise<ProfileTest[]> => {
+    return new Promise((resolve, reject) => {
+        request(url)
+            .post('/graphql')
+            .set('Content-Type', 'application/json')
+            .send({
+                query: `query Query($owner: ID!) {
+                    profileByOwner(owner: $owner) {
+                        id
+                        owner {
+                            id
+                            user_name
+                            email
+                        }
+                        avatar
+                        cover
+                        about
+                        location
+                        interests
+                        follows {
+                            id
+                            user_name
+                            email
+                        }
+                    }
+                }`,
+                variables: {
+                    owner: ownerId,
+                },
+            })
+            .expect(200, (err, response) => {
+                if (err) {
+                    reject(err);
+                }
+                const profiles = response.body.data.profileByOwner;
+                expect(profiles).toBeInstanceOf(Array);
+                profiles.forEach((profile: ProfileTest) => {
+                    expect(profile).toHaveProperty('id');
+                    expect(profile).toHaveProperty('owner');
+                    expect(profile).toHaveProperty('avatar');
+                    expect(profile).toHaveProperty('cover');
+                    expect(profile).toHaveProperty('about');
+                    expect(profile).toHaveProperty('location');
+                    expect(profile).toHaveProperty('interests');
+                    expect(profile).toHaveProperty('follows');
+                });
+                resolve(profiles);
+            }
+            );
+    });
+};
+
 const postFile = async (url: string | Function, token: string, filename: string): Promise<UploadMessageResponse> => {
     return new Promise((resolve, reject) => {
         request(url)
@@ -182,4 +330,4 @@ const deleteProfile = async (url: string | Function, id: string, token: string):
     });
 };
 
-export {postFile, postProfile, updateProfile, deleteProfile};
+export {postFile, postProfile, updateProfile, deleteProfile, getProfiles, getProfileById, getProfileByOwner};

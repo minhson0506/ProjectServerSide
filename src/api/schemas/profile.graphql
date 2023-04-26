@@ -12,7 +12,7 @@ type Profile {
 type Query {
     profiles: [Profile]
     profileById(id: ID!): Profile
-    profileByOwner(owner: ID!): Profile
+    profileByOwner(owner: ID!): [Profile]
 }
 
 type Mutation {

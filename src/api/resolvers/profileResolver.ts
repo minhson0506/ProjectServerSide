@@ -1,5 +1,5 @@
 import {GraphQLError} from "graphql";
-import {UserIdWithToken} from "../../interfaces/User";
+import {User, UserIdWithToken} from "../../interfaces/User";
 import profileModel from "../models/profileModel";
 import {Types} from "mongoose";
 import {Profile} from "../../interfaces/Profile";
@@ -13,8 +13,8 @@ export default {
         profileById: async (parent: undefined, args: {id: string}) => {
             return await profileModel.findById(args.id);
         },
-        profileByOwner: async (parent: undefined, args: UserIdWithToken) => {
-            return await profileModel.find({owner: args.id});
+        profileByOwner: async (parent: undefined, args: {owner: string}) => {
+            return await profileModel.find({owner: args.owner});
         },
     },
     Mutation: {
