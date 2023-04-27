@@ -39,6 +39,4 @@ type Mutation {
   register(user: UserInput!): TokenMessage
   updateUser(user: UserModify!): TokenMessage
   deleteUser: TokenMessage
-  updateUserAsAdmin(user: UserModify!, id: ID!): TokenMessage
-  deleteUserAsAdmin(id: ID!): TokenMessage
 }

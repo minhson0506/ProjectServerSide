@@ -15,8 +15,8 @@ export default {
             return await pictureModel.findById(args.id);
         },
         // get pictures by owner
-        picturesByOwner: async (parent: undefined, args: UserIdWithToken) => {
-            return await pictureModel.find({owner: args.id});
+        picturesByOwner: async (parent: undefined, args: {owner: string}) => {
+            return await pictureModel.find({owner: args.owner});
         },
     },
     Mutation: {

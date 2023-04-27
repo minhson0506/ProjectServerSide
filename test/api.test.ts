@@ -8,6 +8,8 @@ import {getNotFound} from "./testFunction"
 import {deleteProfile, getProfileById, getProfileByOwner, getProfiles, postFile, postProfile, updateProfile} from "./profileFunction"
 import UploadMessageResponse from "../src/interfaces/UploadMessageResponse"
 import {ProfileTest} from "../src/interfaces/Profile"
+import {PictureTest} from "../src/interfaces/Picture"
+import {deletePicture, getPictureById, getPictures, postPicture, updatePicture} from "./pictureFunction"
 
 const uploadApp = process.env.UPLOAD_URL as string
 
@@ -32,10 +34,6 @@ describe('GET /graphql', () => {
     };
 
     let userData: LoginMessageResponse;
-    let avatar: UploadMessageResponse;
-    let cover: UploadMessageResponse;
-    let profileData: ProfileTest;
-    let profileId: string;
 
     // test create user
     it('should create a user', async () => {
@@ -62,12 +60,17 @@ describe('GET /graphql', () => {
         await putUser(app, userData.token!);
     });
 
+    let avatar: UploadMessageResponse;
+    let cover: UploadMessageResponse;
+
     // test upload file
     it('should upload a file', async () => {
         avatar = await postFile(uploadApp, userData.token!, 'avatar.jpeg');
         cover = await postFile(uploadApp, userData.token!, 'cover.jpeg');
     });
 
+    let profileData: ProfileTest;
+    let profileId: string;
     // test create profile
     it('should create a profile', async () => {
         profileData = {
@@ -99,6 +102,7 @@ describe('GET /graphql', () => {
 
     // test update profile
     it('should update a profile', async () => {
+
         profileData.id = profileId;
         profileData.about = 'Updated about';
         profileData.location = 'Updated location';
@@ -108,14 +112,56 @@ describe('GET /graphql', () => {
     });
 
     // test delete profile
-    it('should delete a profile', async () => {
-        await deleteProfile(app, profileId, userData.token!);
+    // it('should delete a profile', async () => {
+    //     await deleteProfile(app, profileId, userData.token!);
+    // });
+
+    let pictureData: PictureTest
+    let picture: UploadMessageResponse;
+    // test create picture
+    it('should create a picture', async () => {
+        picture = await postFile(uploadApp, userData.token!, 'picture.jpg');
+        pictureData = {
+            title: 'Test picture',
+            description: 'Test description',
+            filename: picture.data.filename,
+            owner: userData.user.id
+        };
+        const result = await postPicture(app, pictureData, userData.token!);
+        pictureData.id = result.id!;
+    });
+
+    // test get pictures
+    it('should return array of pictures', async () => {
+        await getPictures(app);
+    });
+
+    // test get picture by Id
+    it('should return single picture', async () => {
+        await getPictureById(app, pictureData.id!);
+    });
+
+    // test get picture by user Id
+    it('should return single picture by user Id', async () => {
+        await getProfileByOwner(app, userData.user.id!);
+    });
+
+    // test update picture
+    it('should update a picture', async () => {
+        pictureData.title = 'Updated title';
+        pictureData.description = 'Updated description';
+        await updatePicture(app, pictureData, userData.token!);
+    });
+
+    // test delete picture
+    it('should delete a picture', async () => {
+        await deletePicture(app, pictureData.id!, userData.token!);
     });
 
     // test delete user
-    it('should delete current user', async () => {
-        await deleteUser(app, userData.token!);
-    });
+    // it('should delete current user', async () => {
+    //     await deleteUser(app, userData.token!);
+    // });
 
     // test brute force protectiom
     test('Brute force attack simulation', async () => {

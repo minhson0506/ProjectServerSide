@@ -8,4 +8,12 @@ interface Picture extends Document {
     owner: Types.ObjectId | User;
 }
 
-export {Picture}
+interface PictureTest {
+    id?: string;
+    title?: string;
+    description?: string;
+    filename?: string;
+    owner?: Types.ObjectId | User;
+}
+
+export {Picture, PictureTest}

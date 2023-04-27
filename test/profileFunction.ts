@@ -2,7 +2,7 @@ import request from 'supertest';
 import {ProfileTest} from '../src/interfaces/Profile';
 import UploadMessageResponse from '../src/interfaces/UploadMessageResponse';
 
-const getProfiles = async (url: string | Function): Promise<ProfileTest> => {
+const getProfiles = async (url: string | Function): Promise<ProfileTest[]> => {
     return new Promise((resolve, reject) => {
         request(url)
             .post('/graphql')
@@ -35,14 +35,16 @@ const getProfiles = async (url: string | Function): Promise<ProfileTest> => {
                 }
                 const profiles = response.body.data.profiles;
                 expect(profiles).toBeInstanceOf(Array);
-                expect(profiles[0]).toHaveProperty('id');
-                expect(profiles[0]).toHaveProperty('owner');
-                expect(profiles[0]).toHaveProperty('avatar');
-                expect(profiles[0]).toHaveProperty('cover');
-                expect(profiles[0]).toHaveProperty('about');
-                expect(profiles[0]).toHaveProperty('location');
-                expect(profiles[0]).toHaveProperty('interests');
-                expect(profiles[0]).toHaveProperty('follows');
+                profiles.forEach((profile: ProfileTest) => {
+                    expect(profile).toHaveProperty('id');
+                    expect(profile).toHaveProperty('owner');
+                    expect(profile).toHaveProperty('avatar');
+                    expect(profile).toHaveProperty('cover');
+                    expect(profile).toHaveProperty('about');
+                    expect(profile).toHaveProperty('location');
+                    expect(profile).toHaveProperty('interests');
+                    expect(profile).toHaveProperty('follows');
+                });
                 resolve(profiles);
             }
             );
