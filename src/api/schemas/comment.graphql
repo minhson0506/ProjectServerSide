@@ -1,8 +1,11 @@
+scalar DateTime
+
 type Comment {
     id: ID!
     text: String!
     owner: User!
     picture: Picture!
+    timestamp: DateTime!
 }
 
 type Query {
@@ -13,7 +16,7 @@ type Query {
 }
 
 type Mutation {
-    createComment(text: String!, ownerId: ID!, pictureId: ID!): Comment
-    updateComment(id: ID!, text: String!): Comment
+    createComment(text: String!, picture: ID!, timestamp: DateTime!): Comment
+    updateComment(id: ID!, text: String!, timestamp: DateTime!): Comment
     deleteComment(id: ID!): Comment
 }

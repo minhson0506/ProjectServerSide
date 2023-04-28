@@ -13,7 +13,7 @@ type Query {
 }
 
 type Mutation {
-    createPicture(title: String!, description: String!, filename: String!, owner: ID!): Picture
+    createPicture(title: String!, description: String!, filename: String!): Picture
     updatePicture(id: ID!, title: String, description: String, filename: String): Picture
     deletePicture(id: ID!): Picture
 }

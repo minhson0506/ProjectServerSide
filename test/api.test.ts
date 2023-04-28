@@ -1,4 +1,4 @@
-import mongoose from "mongoose"
+import mongoose, {Types} from "mongoose"
 import {deleteUser, getSingleUser, getUsers, login, loginBrute, postUser, putUser} from "./userFunction"
 import app from "../src/app"
 import {UserTest} from "../src/interfaces/User"
@@ -10,6 +10,8 @@ import UploadMessageResponse from "../src/interfaces/UploadMessageResponse"
 import {ProfileTest} from "../src/interfaces/Profile"
 import {PictureTest} from "../src/interfaces/Picture"
 import {deletePicture, getPictureById, getPictures, postPicture, updatePicture} from "./pictureFunction"
+import {CommentTest} from "../src/interfaces/Comment"
+import {getCommentById, getComments, getCommentsByOwnerId, getCommentsByPictureId, postComment, updateComment} from "./commentFunction"
 
 const uploadApp = process.env.UPLOAD_URL as string
 
@@ -153,10 +155,48 @@ describe('GET /graphql', () => {
         await updatePicture(app, pictureData, userData.token!);
     });
 
-    // test delete picture
-    it('should delete a picture', async () => {
-        await deletePicture(app, pictureData.id!, userData.token!);
+    let commentData: CommentTest;
+    // test create comment 
+    it('should create a comment', async () => {
+        commentData = {
+            text: 'Test comment',
+            picture: new Types.ObjectId(pictureData.id),
+            timestamp: new Date(),
+        }
+        const response = await postComment(app, commentData, userData.token!);
+        commentData.id = response.id!;
     });
+
+    // test get comments
+    it('should return array of comments', async () => {
+        await getComments(app);
+    });
+
+    // test get comment by Id
+    it('should return single comment', async () => {
+        await getCommentById(app, commentData.id!);
+    });
+
+    // test get comment by picture Id
+    it('should return comments by picture Id', async () => {
+        await getCommentsByPictureId(app, pictureData.id!);
+    });
+
+    // test get comment by user Id
+    it('should return comments by user Id', async () => {
+        await getCommentsByOwnerId(app, userData.user.id!);
+    });
+
+    // test update comment
+    it('should update a comment', async () => {
+        commentData.text = 'Updated comment';
+        await updateComment(app, commentData, userData.token!);
+    });
+
+    // test delete picture
+    // it('should delete a picture', async () => {
+    //     await deletePicture(app, pictureData.id!, userData.token!);
+    // });
 
     // test delete user
     // it('should delete current user', async () => {

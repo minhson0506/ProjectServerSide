@@ -3,8 +3,14 @@ import {Picture} from "../../interfaces/Picture";
 import {UserIdWithToken} from "../../interfaces/User";
 import pictureModel from "../models/pictureModel";
 import {Types} from "mongoose";
+import {Comment} from "../../interfaces/Comment";
 
 export default {
+    Comment: {
+        picture: async (parent: Comment) => {
+            return await pictureModel.findById(parent.picture);
+        },
+    },
     Query: {
         // get all pictures
         pictures: async () => {

@@ -2,6 +2,7 @@ import {GraphQLError} from "graphql";
 import commentModel from "../models/commentModel";
 import {UserIdWithToken} from "../../interfaces/User";
 import {Comment} from "../../interfaces/Comment";
+import {Types} from "mongoose";
 
 export default {
     Query: {
@@ -23,7 +24,7 @@ export default {
             if (!user.token) {
                 throw new GraphQLError('Unauthorized', {extensions: {code: 'UNAUTHORIZED'}});
             }
-            const comment = new commentModel({...args, owner: user.id});
+            const comment = new commentModel({...args, owner: new Types.ObjectId(user.id)});
             return await comment.save();
         },
         updateComment: async(parent: undefined, args: Comment, user: UserIdWithToken) => {

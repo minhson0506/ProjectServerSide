@@ -6,6 +6,15 @@ interface Comment extends Document {
     text: string;
     owner: Types.ObjectId | User;
     picture: Types.ObjectId | Picture;
+    timestamp: Date;
 }
 
-export {Comment}
+interface CommentTest {
+    id?: string;
+    text?: string;
+    owner?: Types.ObjectId | User;
+    picture?: Types.ObjectId | Picture;
+    timestamp?: Date;
+}
+
+export {Comment, CommentTest}

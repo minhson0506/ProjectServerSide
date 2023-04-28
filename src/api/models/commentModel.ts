@@ -16,6 +16,10 @@ const commentModel = new Schema<Comment>({
         ref: 'Picture',
         required: true,
     },
+    timestamp: {
+        type: Date,
+        required: true,
+    },
 });
 
 export default mongoose.model<Comment>('Comment', commentModel);
