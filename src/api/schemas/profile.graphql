@@ -25,6 +25,6 @@ type Mutation {
     ): Profile
     updateProfile(id: ID!, avatar: String, cover: String, about: String, location: String, interests: [String], follows: [ID]): Profile
     deleteProfile(id: ID!): Profile
-    addFollow(id: ID!, idAdd: ID!): Profile
-    removeFollow(id: ID!, idRemove: ID!): Profile
+    addFollow(id: ID!): Profile
+    removeFollow(id: ID!): Profile
 }

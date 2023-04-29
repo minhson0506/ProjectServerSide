@@ -262,4 +262,38 @@ const deleteUser = (
     });
 };
 
-export {postUser, getUsers, getSingleUser, login, loginBrute, putUser, deleteUser};
+const checkToken = (url: string | Function, token: string) => {
+    return new Promise((resolve, reject) => {
+        request(url)
+            .post('/graphql')
+            .set('Content-type', 'application/json')
+            .set('Authorization', 'Bearer ' + token)
+            .send({
+                query: `query Query {
+                    checkToken {
+                        message
+                        user {
+                            id
+                            user_name
+                            email
+                        }
+                    }
+                }`,
+            })
+            .expect(200, (err, response) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    const userData = response.body.data.checkToken;
+                    expect(userData).toHaveProperty('message');
+                    expect(userData).toHaveProperty('user');
+                    expect(userData.user).toHaveProperty('id');
+                    resolve(response.body.data.checkToken);
+                }
+            });
+    });
+};
+
+
+
+export {postUser, getUsers, getSingleUser, login, loginBrute, putUser, deleteUser, checkToken};

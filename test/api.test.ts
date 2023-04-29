@@ -1,11 +1,11 @@
 import mongoose, {Types} from "mongoose"
-import {deleteUser, getSingleUser, getUsers, login, loginBrute, postUser, putUser} from "./userFunction"
+import {checkToken, deleteUser, getSingleUser, getUsers, login, loginBrute, postUser, putUser} from "./userFunction"
 import app from "../src/app"
 import {UserTest} from "../src/interfaces/User"
 import randomstring from "randomstring"
 import {LoginMessageResponse} from "../src/interfaces/ResponseMessage"
 import {getNotFound} from "./testFunction"
-import {deleteProfile, getProfileById, getProfileByOwner, getProfiles, postFile, postProfile, updateProfile} from "./profileFunction"
+import {addFollow, deleteProfile, getProfileById, getProfileByOwner, getProfiles, postFile, postProfile, removeFollow, updateProfile} from "./profileFunction"
 import UploadMessageResponse from "../src/interfaces/UploadMessageResponse"
 import {ProfileTest} from "../src/interfaces/Profile"
 import {PictureTest} from "../src/interfaces/Picture"
@@ -55,6 +55,11 @@ describe('GET /graphql', () => {
     // test get single user
     it('should return single user', async () => {
         await getSingleUser(app, userData.user.id!);
+    });
+
+    // test check token
+    it('should return user data when checking token', async () => {
+        await checkToken(app, userData.token!);
     });
 
     // test update user
@@ -111,6 +116,16 @@ describe('GET /graphql', () => {
         profileData.interests = ['Updated interest 1', 'Updated interest 2'];
         profileData.follows = [userData.user.id!];
         await updateProfile(app, profileData, userData.token!);
+    });
+
+    // test remove follow from profile
+    it('should remove follow from a profile', async () => {
+        await removeFollow(app, userData.user.id, userData.token!);
+    });
+    
+    // test add follow to profile
+    it('should add follow to a profile', async () => {
+        await addFollow(app, userData.user.id, userData.token!);
     });
 
     // test delete profile

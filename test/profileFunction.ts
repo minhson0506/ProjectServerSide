@@ -332,4 +332,108 @@ const deleteProfile = async (url: string | Function, id: string, token: string):
     });
 };
 
-export {postFile, postProfile, updateProfile, deleteProfile, getProfiles, getProfileById, getProfileByOwner};
+const addFollow = async (url: string | Function, followId: string, token: string): Promise<ProfileTest> => {
+    return new Promise((resolve, reject) => {
+        request(url)
+            .post('/graphql')
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                query: `mutation AddFollow($id: ID!) {
+                    addFollow(id: $id) {
+                        id
+                        owner {
+                            id
+                            user_name
+                            email
+                        }
+                        avatar
+                        cover
+                        about
+                        location
+                        interests
+                        follows {
+                            id
+                            user_name
+                            email
+                        }
+                    }
+                }`,
+                variables: {id: followId}
+            })
+            .expect(200, (err, res) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    const profile = res.body.data.addFollow;
+                    expect(profile).toHaveProperty('id');
+                    expect(profile).toHaveProperty('owner');
+                    expect(profile.owner).toHaveProperty('id');
+                    expect(profile.owner).toHaveProperty('user_name');
+                    expect(profile.owner).toHaveProperty('email');
+                    expect(profile).toHaveProperty('avatar');
+                    expect(profile).toHaveProperty('cover');
+                    expect(profile).toHaveProperty('about');
+                    expect(profile).toHaveProperty('location');
+                    expect(profile).toHaveProperty('interests');
+                    expect(profile).toHaveProperty('follows');
+                    resolve(profile);
+                }
+            }
+            );
+    });
+};
+
+const removeFollow = async (url: string | Function, followId: string, token: string): Promise<ProfileTest> => {
+    return new Promise((resolve, reject) => {
+        request(url)
+            .post('/graphql')
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                query: `mutation RemoveFollow($id: ID!) {
+                    removeFollow(id: $id) {
+                        id
+                        owner {
+                            id
+                            user_name
+                            email
+                        }
+                        avatar
+                        cover
+                        about
+                        location
+                        interests
+                        follows {
+                            id
+                            user_name
+                            email
+                        }
+                    }
+                }`,
+                variables: {id: followId}
+            })
+            .expect(200, (err, res) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    const profile = res.body.data.removeFollow;
+                    expect(profile).toHaveProperty('id');
+                    expect(profile).toHaveProperty('owner');
+                    expect(profile.owner).toHaveProperty('id');
+                    expect(profile.owner).toHaveProperty('user_name');
+                    expect(profile.owner).toHaveProperty('email');
+                    expect(profile).toHaveProperty('avatar');
+                    expect(profile).toHaveProperty('cover');
+                    expect(profile).toHaveProperty('about');
+                    expect(profile).toHaveProperty('location');
+                    expect(profile).toHaveProperty('interests');
+                    expect(profile).toHaveProperty('follows');
+                    resolve(profile);
+                }
+            }
+            );
+    });
+};
+
+export {postFile, postProfile, updateProfile, deleteProfile, getProfiles, getProfileById, getProfileByOwner, addFollow, removeFollow};
