@@ -294,6 +294,39 @@ const checkToken = (url: string | Function, token: string) => {
     });
 };
 
+const searchUser = (url: string | Function, search: string, token: string) => {
+    return new Promise((resolve, reject) => {
+        request(url)
+            .post('/graphql')
+            .set('Content-type', 'application/json')
+            .set('Authorization', 'Bearer ' + token)
+            .send({
+                query: `query Query($search: String!) {
+                    searchUsers(search: $search) {
+                        id
+                        user_name
+                        email
+                    }
+                }`,
+                variables: {
+                    search: search,
+                },
+            })
+            .expect(200, (err, response) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    const userDatas = response.body.data.searchUsers;
+                    expect(userDatas).toBeInstanceOf(Array);
+                    userDatas.forEach((userData: UserTest) => {
+                        expect(userData).toHaveProperty('id');
+                        expect(userData).toHaveProperty('user_name');
+                        expect(userData).toHaveProperty('email');
+                    });
+                    resolve(userDatas);
+                }
+            });
+    });
+};
 
-
-export {postUser, getUsers, getSingleUser, login, loginBrute, putUser, deleteUser, checkToken};
+export {postUser, getUsers, getSingleUser, login, loginBrute, putUser, deleteUser, checkToken, searchUser};

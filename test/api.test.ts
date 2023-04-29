@@ -1,5 +1,5 @@
 import mongoose, {Types} from "mongoose"
-import {checkToken, deleteUser, getSingleUser, getUsers, login, loginBrute, postUser, putUser} from "./userFunction"
+import {checkToken, deleteUser, getSingleUser, getUsers, login, loginBrute, postUser, putUser, searchUser} from "./userFunction"
 import app from "../src/app"
 import {UserTest} from "../src/interfaces/User"
 import randomstring from "randomstring"
@@ -45,6 +45,11 @@ describe('GET /graphql', () => {
     // login user
     it('should login a user', async () => {
         userData = await login(app, testUser)
+    })
+
+    // test search user
+    it('should return array of users with searching', async () => {
+        await searchUser(app, "test", userData.token!)
     })
 
     // test get all users
@@ -122,16 +127,16 @@ describe('GET /graphql', () => {
     it('should remove follow from a profile', async () => {
         await removeFollow(app, userData.user.id, userData.token!);
     });
-    
+
     // test add follow to profile
     it('should add follow to a profile', async () => {
         await addFollow(app, userData.user.id, userData.token!);
     });
 
     // test delete profile
-    // it('should delete a profile', async () => {
-    //     await deleteProfile(app, profileId, userData.token!);
-    // });
+    it('should delete a profile', async () => {
+        await deleteProfile(app, profileId, userData.token!);
+    });
 
     let pictureData: PictureTest
     let picture: UploadMessageResponse;
@@ -209,14 +214,14 @@ describe('GET /graphql', () => {
     });
 
     // test delete picture
-    // it('should delete a picture', async () => {
-    //     await deletePicture(app, pictureData.id!, userData.token!);
-    // });
+    it('should delete a picture', async () => {
+        await deletePicture(app, pictureData.id!, userData.token!);
+    });
 
     // test delete user
-    // it('should delete current user', async () => {
-    //     await deleteUser(app, userData.token!);
-    // });
+    it('should delete current user', async () => {
+        await deleteUser(app, userData.token!);
+    });
 
     // test brute force protectiom
     test('Brute force attack simulation', async () => {
