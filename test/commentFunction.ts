@@ -280,6 +280,48 @@ const updateComment = async (url: string | Function, comment: CommentTest, token
     });
 }
 
+const deleteComment = async (url: string | Function, id: string, token: string): Promise<CommentTest> => {
+    return new Promise((resolve, reject) => {
+        request(url)
+            .post('/graphql')
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                query: `mutation Mutation($deleteCommentId: ID!) {
+                    deleteComment(id: $deleteCommentId) {
+                        id
+                        text
+                        owner {
+                            id
+                            user_name
+                            email
+                        }
+                        picture {
+                            id
+                            title
+                            description
+                            filename
+                        }
+                        timestamp
+                        }
+                }`,
+                variables: {
+                    deleteCommentId: id,
+                }
+            })
+            .expect(200, (err, response) => {
+                if (err) {
+                    reject(err);
+                }
+                const comment = response.body.data.deleteComment;
+                expect(comment).toHaveProperty('id');
+                expect(comment).toHaveProperty('text');
+                expect(comment).toHaveProperty('owner');
+                expect(comment).toHaveProperty('picture');
+                resolve(comment);
+            }
+            );
+    });
+}
 
-
-export { getComments, getCommentById, getCommentsByPictureId, getCommentsByOwnerId, postComment, updateComment };
+export { getComments, getCommentById, getCommentsByPictureId, getCommentsByOwnerId, postComment, updateComment, deleteComment};

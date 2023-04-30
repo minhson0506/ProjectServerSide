@@ -11,7 +11,7 @@ import {ProfileTest} from "../src/interfaces/Profile"
 import {PictureTest} from "../src/interfaces/Picture"
 import {deletePicture, getPictureById, getPictures, postPicture, updatePicture} from "./pictureFunction"
 import {CommentTest} from "../src/interfaces/Comment"
-import {getCommentById, getComments, getCommentsByOwnerId, getCommentsByPictureId, postComment, updateComment} from "./commentFunction"
+import {deleteComment, getCommentById, getComments, getCommentsByOwnerId, getCommentsByPictureId, postComment, updateComment} from "./commentFunction"
 
 const uploadApp = process.env.UPLOAD_URL as string
 
@@ -213,6 +213,10 @@ describe('GET /graphql', () => {
         await updateComment(app, commentData, userData.token!);
     });
 
+    // test delete comment
+    it('should delete a comment', async () => {
+        await deleteComment(app, commentData.id!, userData.token!);
+    });
     // test delete picture
     it('should delete a picture', async () => {
         await deletePicture(app, pictureData.id!, userData.token!);
