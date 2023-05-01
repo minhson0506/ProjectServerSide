@@ -38,7 +38,8 @@
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.0.2",
     "morgan": "^1.10.0",
-    "randomstring": "^1.2.3"
+    "randomstring": "^1.2.3",
+    "socket.io": "^4.6.1"
   },
   "devDependencies": {
     "@types/apidoc": "^0.50.0",
