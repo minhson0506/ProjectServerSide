@@ -3,6 +3,10 @@ import commentModel from "../models/commentModel";
 import {UserIdWithToken} from "../../interfaces/User";
 import {Comment} from "../../interfaces/Comment";
 import {Types} from "mongoose";
+import {ClientToServerEvents, ServerToClientEvents} from "../../interfaces/ISocket";
+import {Socket, io} from "socket.io-client";
+
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(process.env.SOCKET_URL as string || 'http://localhost:3003')
 
 export default {
     Query: {
@@ -25,7 +29,9 @@ export default {
                 throw new GraphQLError('Unauthorized', {extensions: {code: 'UNAUTHORIZED'}});
             }
             const comment = new commentModel({...args, owner: new Types.ObjectId(user.id)});
-            return await comment.save();
+            const result = await comment.save();
+            socket.emit('update', 'comment');
+            return result;
         },
         updateComment: async(parent: undefined, args: Comment, user: UserIdWithToken) => {
             if (!user.token) {
@@ -38,7 +44,9 @@ export default {
             if (comment.owner.toString() !== user.id.toString()) {
                 throw new GraphQLError('Unauthorized', {extensions: {code: 'UNAUTHORIZED'}});
             }
-            return await commentModel.findByIdAndUpdate(args.id, args, {new: true});
+            const result = await commentModel.findByIdAndUpdate(args.id, args, {new: true});
+            socket.emit('update', 'comment');
+            return result;
         },
         deleteComment: async(parent: undefined, args: {id: string}, user: UserIdWithToken) => {
             if (!user.token) {
@@ -51,7 +59,9 @@ export default {
             if (comment.owner.toString() !== user.id.toString()) {
                 throw new GraphQLError('Unauthorized', {extensions: {code: 'UNAUTHORIZED'}});
             }
-            return await commentModel.findByIdAndDelete(args.id);
+            const result = await commentModel.findByIdAndDelete(args.id);
+            socket.emit('update', 'comment');
+            return result;
         },
     },
 }

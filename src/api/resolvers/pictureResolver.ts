@@ -4,6 +4,10 @@ import {UserIdWithToken} from "../../interfaces/User";
 import pictureModel from "../models/pictureModel";
 import {Types} from "mongoose";
 import {Comment} from "../../interfaces/Comment";
+import {ClientToServerEvents, ServerToClientEvents} from "../../interfaces/ISocket";
+import {Socket, io} from "socket.io-client";
+
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(process.env.SOCKET_URL as string || 'http://localhost:3003')
 
 export default {
     Comment: {
@@ -32,7 +36,9 @@ export default {
                 throw new GraphQLError('Unauthorized', {extensions: {code: 'UNAUTHORIZED'}});
             }
             const picture = new pictureModel({ ...args, owner: new Types.ObjectId(user.id)});
-            return await picture.save();
+            const result = await picture.save();
+            socket.emit('update', 'picture');
+            return result;
         },
         // update picture
         updatePicture: async (parent: undefined, args: Picture, user: UserIdWithToken) => {
@@ -47,7 +53,9 @@ export default {
             if (picture.owner.toString() !== user.id.toString()) {
                 throw new GraphQLError('Unauthorized', {extensions: {code: 'UNAUTHORIZED'}});
             }
-            return await pictureModel.findByIdAndUpdate(args.id, args, {new: true});
+            const result = await pictureModel.findByIdAndUpdate(args.id, args, {new: true});
+            socket.emit('update', 'picture');
+            return result;
         },
         // delete picture
         deletePicture: async (parent: undefined, args: {id: string}, user: UserIdWithToken) => {
@@ -61,7 +69,9 @@ export default {
             if (picture.owner.toString() !== user.id.toString()) {
                 throw new GraphQLError('Unauthorized', {extensions: {code: 'UNAUTHORIZED'}});
             }
-            return await pictureModel.findByIdAndDelete(args.id);
+            const result = await pictureModel.findByIdAndDelete(args.id);
+            socket.emit('update', 'picture');
+            return result;
         },
     },
 };

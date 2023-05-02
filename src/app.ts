@@ -18,9 +18,6 @@ import {createRateLimitRule} from 'graphql-rate-limit';
 import {shield} from 'graphql-shield';
 import {makeExecutableSchema} from '@graphql-tools/schema';
 import {applyMiddleware} from 'graphql-middleware';
-import {createServer} from 'http';
-import {Server} from 'socket.io';
-import {ClientToServerEvents, ServerToClientEvents} from './interfaces/ISocket';
 
 const app = express();
 
@@ -35,21 +32,6 @@ app.use(express.json());
 
 (async () => {
     try {
-        const httpServer = createServer(app);
-        const io = new Server<ClientToServerEvents, ServerToClientEvents>(httpServer, {
-            cors: {
-                origin: '*',
-            },
-        });
-
-        io.on('connection', (socket) => {
-            console.log(`${socket.id} user connected`);
-            socket.on('disconnect', () => {
-                console.log(`${socket.id} user disconnected`);
-            });
-        });
-
-
         const rateLimitRule = createRateLimitRule({
             identifyContext: (ctx) => ctx.id,
         });
