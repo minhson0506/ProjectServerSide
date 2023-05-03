@@ -111,8 +111,8 @@ const postPicture = async (url: string | Function, picture: PictureTest, token: 
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${token}`)
             .send({
-                query: `mutation Mutation($title: String!, $description: String!, $filename: String!) {
-                    createPicture(title: $title, description: $description, filename: $filename) {
+                query: `mutation Mutation($title: String!, $description: String!, $filename: String!, $timestamp: DateTime!) {
+                        createPicture(title: $title, description: $description, filename: $filename, timestamp: $timestamp) {
                         id
                         title
                         description
@@ -122,7 +122,8 @@ const postPicture = async (url: string | Function, picture: PictureTest, token: 
                             user_name
                             email
                         }
-                    }
+                        timestamp
+                        }
                 }`,
                 variables: picture,
             })

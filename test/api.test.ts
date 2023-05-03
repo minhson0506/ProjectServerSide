@@ -147,7 +147,7 @@ describe('GET /graphql', () => {
             title: 'Test picture',
             description: 'Test description',
             filename: picture.data.filename,
-            owner: userData.user.id
+            timestamp: new Date(),
         };
         const result = await postPicture(app, pictureData, userData.token!);
         pictureData.id = result.id!;
