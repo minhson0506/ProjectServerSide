@@ -6,6 +6,7 @@ interface Picture extends Document {
     description: string;
     filename: string;
     owner: Types.ObjectId | User;
+    timestamp: Date;
 }
 
 interface PictureTest {
@@ -14,6 +15,7 @@ interface PictureTest {
     description?: string;
     filename?: string;
     owner?: Types.ObjectId | User;
+    timestamp?: Date;
 }
 
 export {Picture, PictureTest}

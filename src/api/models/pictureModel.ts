@@ -19,6 +19,10 @@ const pictureModel = new Schema<Picture>({
         ref: 'User',
         required: true,
     },
+    timestamp: {
+        type: Date,
+        required: true,
+    },
 });
 
 export default mongoose.model<Picture>('Picture', pictureModel);
