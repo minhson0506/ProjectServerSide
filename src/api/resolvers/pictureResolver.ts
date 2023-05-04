@@ -37,7 +37,7 @@ export default {
             }
             const picture = new pictureModel({ ...args, owner: new Types.ObjectId(user.id)});
             const result = await picture.save();
-            socket.emit('update', 'picture');
+            socket.emit('update', 'updateFeed');
             return result;
         },
         // update picture

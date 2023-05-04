@@ -1,10 +1,5 @@
 interface ServerToClientEvents {
-    createPicture: (message: string) => void;
-    updatePicture: (message: string) => void;
-    deletePicture: (message: string) => void;
-    createComment: (message: string) => void;
-    updateComment: (message: string) => void;
-    deleteComment: (message: string) => void;
+    updateFeed: (message: string) => void;
 }
 
 interface ClientToServerEvents {
