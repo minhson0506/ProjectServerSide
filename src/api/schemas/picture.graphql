@@ -1,0 +1,22 @@
+scalar DateTime
+
+type Picture {
+    id: ID!
+    title: String!
+    description: String!
+    filename: String!
+    owner: User!
+    timestamp: DateTime!
+}
+
+type Query {
+    pictures: [Picture]
+    pictureById(id: ID!): Picture
+    picturesByOwner(owner: ID!): [Picture]
+}
+
+type Mutation {
+    createPicture(title: String!, description: String!, filename: String!, timestamp: DateTime!): Picture
+    updatePicture(id: ID!, title: String, description: String, filename: String): Picture
+    deletePicture(id: ID!): Picture
+}
