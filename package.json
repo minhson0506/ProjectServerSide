@@ -4,11 +4,13 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "start": "ts-node src/index.ts",
+    "start": "node dist/src/index.js",
     "dev": "nodemon src/index.ts",
     "build": "tsc",
+    "copyGraphql": "copyfiles --error src/api/schemas/*.graphql dist",
+    "postbuild": "npm run copyGraphql",
     "lint": "eslint --fix src test",
-    "test": "jest --detectOpenHandles --forceExit --silent=false"
+    "test": "jest --detectOpenHandles --forceExit"
   },
   "repository": {
     "type": "git",
