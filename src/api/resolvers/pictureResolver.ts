@@ -54,7 +54,7 @@ export default {
                 throw new GraphQLError('Unauthorized', {extensions: {code: 'UNAUTHORIZED'}});
             }
             const result = await pictureModel.findByIdAndUpdate(args.id, args, {new: true});
-            socket.emit('update', 'picture');
+            socket.emit('update', 'updateFeed');
             return result;
         },
         // delete picture
@@ -70,7 +70,7 @@ export default {
                 throw new GraphQLError('Unauthorized', {extensions: {code: 'UNAUTHORIZED'}});
             }
             const result = await pictureModel.findByIdAndDelete(args.id);
-            socket.emit('update', 'picture');
+            socket.emit('update', 'updateFeed');
             return result;
         },
     },

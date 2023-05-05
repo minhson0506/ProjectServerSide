@@ -30,7 +30,7 @@ export default {
             }
             const comment = new commentModel({...args, owner: new Types.ObjectId(user.id)});
             const result = await comment.save();
-            socket.emit('update', 'comment');
+            socket.emit('update', 'updateFeed');
             return result;
         },
         updateComment: async(parent: undefined, args: Comment, user: UserIdWithToken) => {
@@ -45,7 +45,7 @@ export default {
                 throw new GraphQLError('Unauthorized', {extensions: {code: 'UNAUTHORIZED'}});
             }
             const result = await commentModel.findByIdAndUpdate(args.id, args, {new: true});
-            socket.emit('update', 'comment');
+            socket.emit('update', 'updateFeed');
             return result;
         },
         deleteComment: async(parent: undefined, args: {id: string}, user: UserIdWithToken) => {
@@ -60,7 +60,7 @@ export default {
                 throw new GraphQLError('Unauthorized', {extensions: {code: 'UNAUTHORIZED'}});
             }
             const result = await commentModel.findByIdAndDelete(args.id);
-            socket.emit('update', 'comment');
+            socket.emit('update', 'updateFeed');
             return result;
         },
     },
