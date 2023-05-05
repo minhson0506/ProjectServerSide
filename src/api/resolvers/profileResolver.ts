@@ -65,7 +65,7 @@ export default {
             if (profile[0].follows.includes(new Types.ObjectId(args.id))) {
                 throw new GraphQLError('Already following', {extensions: {code: 'ALREADY_FOLLOWING'}});
             }
-            return await profileModel.findByIdAndUpdate(profile[0].id, {$push: {follows: user.id}}, {new: true});
+            return await profileModel.findByIdAndUpdate(profile[0].id, {$push: {follows: args.id}}, {new: true});
         },
         removeFollow: async (parent: undefined, args: {id: string}, user: UserIdWithToken) => {
             if (!user.token) {
@@ -81,7 +81,7 @@ export default {
             if (!profile[0].follows.includes(new Types.ObjectId(args.id))) {
                 throw new GraphQLError('Not following', {extensions: {code: 'NOT_FOLLOWING'}});
             }
-            return await profileModel.findByIdAndUpdate(profile[0].id, {$pull: {follows: user.id}}, {new: true});
+            return await profileModel.findByIdAndUpdate(profile[0].id, {$pull: {follows: args.id}}, {new: true});
         }
     },
 }
